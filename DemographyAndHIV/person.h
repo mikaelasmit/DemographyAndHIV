@@ -8,6 +8,8 @@
 #define person_h	
 #include <vector>
 
+
+
 using namespace std;
 
 
@@ -15,8 +17,8 @@ using namespace std;
 void loadBirthArray();								// functions to load arrays
 void loadDeathArray_Women();
 void loadDeathArray_Men();
-void loadHIVArray_Women();
-void loadHIVArray_Men();
+//void loadHIVArray_Women();
+//void loadHIVArray_Men();
 
 
 //// --- CREATING PEOPLE --- ////

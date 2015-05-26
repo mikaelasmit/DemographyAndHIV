@@ -16,6 +16,12 @@
 #include "errorcoutmacro.h"
 #include "eventQ.h"
 
+#include <fstream>									// some important libraries for reading in the arrays
+#include <vector>
+#include <string>
+#include <sstream>
+#include <stdlib.h>
+
 
 //// --- OUTSIDE INFORMATION --- ////
 extern double *p_GT;								// Tell this .cpp that there is pointer to Global Time defined externally 
@@ -23,53 +29,83 @@ extern double StartYear;							// Include Start Year so only have to change it o
 extern int *p_PY;									// Pointer to show which year range we are on
 extern priority_queue<event*, vector<event*>, timeComparison> *p_PQ;	// Tell this .cpp that there is a priorty_queue externall and define pointer to it
 extern vector<event*> Events;
-extern person** MyArrayOfPointersToPeople;								// Pointer to MyArrayOfPointersToPeople
+extern person** MyArrayOfPointersToPeople;			// Pointer to MyArrayOfPointersToPeople
 
 
 //// --- Pointers to external arrays --- ////
-double** BirthArray;								// Pointer to the arrays (i think?!)				
+double** BirthArray;	
 double** DeathArray_Women;
 double** DeathArray_Men;
+//double** HIVArray_Women;
+//double** HIVArray_Men;
 
 
-void loadBirthArray() {								// Load birth array
-  FILE* f = fopen("birth_array.bin","rb");
-  BirthArray = new double*[200];
-  for (int i=0; i<200; i++) {
-    BirthArray[i]=new double[35];
-	for (int j=0; j<35; j++) {
-	  fread(&BirthArray[i][j],8,1,f);
+//// --- Load key arrays --- ////
+void loadBirthArray(){								// Let's read in the fertility array 
+	cout << "Lets load the fertility array. " << endl;
+
+	ifstream myfile("fertility.csv");				
+   
+	BirthArray = new double *[301];
+		for (int row = 0; row<301; row++){			// This loop will read in every number to the right place
+		string line;
+		getline(myfile, line);
+		stringstream iss(line);
+		
+		BirthArray[row]=new double[121];
+		for (int col = 0; col<121; col++){
+			string val;
+			getline (iss, val, ',');
+			stringstream convertor(val);
+			convertor >>  BirthArray[row][col];
+		}
 	}
-  }
-  fclose(f);
+	cout << "Fertility array has been read in successfully! " << endl;
+}
+	
+void loadDeathArray_Women(){						// Let's read in the death array for women
+	cout << "Lets load the death array for women. " << endl;
+
+	ifstream myfile("mortality_array_women.csv");	
+   
+	DeathArray_Women = new double *[301];
+		for (int row = 0; row<301; row++){			// This loop will read in every number to the right place
+		string line;
+		getline(myfile, line);
+		stringstream iss(line);
+		
+		DeathArray_Women[row]=new double[121];
+		for (int col = 0; col<121; col++){
+			string val;
+			getline (iss, val, ',');
+			stringstream convertor(val);
+			convertor >>  DeathArray_Women[row][col];
+		}
+	}
+	cout << "Mortality array for women has been read in successfully! " << endl;
 }
 
+void loadDeathArray_Men(){									// Let's read in the death array for men
+	cout << "Lets load the death array for men. " << endl;
 
-void loadDeathArray_Women() {					// Load Death Array for women
-  FILE* f = fopen("mortality_array_women.bin","rb");
-  DeathArray_Women = new double*[301];
-  for (int i=0; i<301; i++) {
-    DeathArray_Women[i]=new double[121];
-	for (int j=0; j<121; j++) {
-	  fread(&DeathArray_Women[i][j],8,1,f);
+	ifstream myfile2("mortality_array_men.csv");				
+   
+	DeathArray_Men = new double *[301];
+		for (int row = 0; row<301; row++){					// This loop will read in every number to the right place
+		string line;
+		getline(myfile2, line);
+		stringstream iss(line);
+		
+		DeathArray_Men[row]=new double[121];
+		for (int col = 0; col<121; col++){
+			string val;
+			getline (iss, val, ',');
+			stringstream convertor(val);
+			convertor >>  DeathArray_Men[row][col];
+		}
 	}
-  }
-  fclose(f);
+	cout << "Mortality array for men has been read in successfully! " << endl;
 }
-
-
-void loadDeathArray_Men() {						// Load Death Array for men
-  FILE* f = fopen("mortality_array_men.bin","rb");
-  DeathArray_Men = new double*[301];
-  for (int i=0; i<301; i++) {
-    DeathArray_Men[i]=new double[121];
-	for (int j=0; j<121; j++) {
-	  fread(&DeathArray_Men[i][j],8,1,f);
-	}
-  }
-  fclose(f);
-}
-
 
 int RandomMinMax(int min, int max){					// Provide function for random number generator between min and max number 
 	return rand()%(max-min+1)+min;					// !!!!Note: if min=0 and max=4 it will generate 0,1,2,3,4
@@ -139,7 +175,7 @@ void person::GetMyDoB(){
 
 // --- Get Dates of all my future babies ---
 void person::GetDateOfBaby(){						// This method already calculates the child's month of birth by providing a year of birth with decimal
-	
+
 	E(cout << "We are assigning Births!" << endl;)
 
 	Age= (*p_GT - DoB);								// Update age ... just in case
