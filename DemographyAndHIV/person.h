@@ -17,8 +17,8 @@ using namespace std;
 void loadBirthArray();								// functions to load arrays
 void loadDeathArray_Women();
 void loadDeathArray_Men();
-//void loadHIVArray_Women();
-//void loadHIVArray_Men();
+void loadHIVArray_Women();
+void loadHIVArray_Men();
 
 
 //// --- CREATING PEOPLE --- ////
@@ -44,8 +44,12 @@ public:
 	int Alive;
 	int AgeAtDeath;
 
-	int HIV;										// Variables related to HIV
-	
+	double HIV;										// Variables related to HIV
+	int CD4_cat_start;
+	int CD4_cat;
+	int ART;	
+
+
 //// --- FUNCTIONS --- ////		
 		
 
