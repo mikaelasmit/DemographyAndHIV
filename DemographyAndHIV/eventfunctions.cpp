@@ -26,7 +26,7 @@ extern int total_population;											// Update total population for output and
 extern person** MyArrayOfPointersToPeople;								// Pointer to MyArrayOfPointersToPeople
 extern int *p_PY;														// Pointer to show which year range we are on
 extern vector<event*> Events;
-
+extern int *p_TP;
 
 //// --- Key parameters for HIV natural history, treatment and mortality --- ////
 	float CD4_startarray[2][4][3]={											// Array for proportion with specific CD4 count ranges upon seroconversion (Men and women)
@@ -125,6 +125,23 @@ void EventBirth(person *MyPointerToPerson){
 		total_population=total_population+1;								// Update total population for output and for next new entry
 		MyPointerToPerson->Age= (*p_GT - MyPointerToPerson->DoB);			// Update age to get age at birth for output
 		
+		int max = *p_TP;					// this is current numbe rof people
+		int n = total_population;			// Lets add a new person
+
+		cout << "Max: " << max << " N: " << n << " Person nr " <<MyPointerToPerson->PersonID-1 <<  endl;
+
+		//--- Read into the array
+		if (n >= max) {
+			max = max * 2;										// double the previous size
+			*p_TP=max;
+			person** temp = new person*[max];					// create new bigger array.
+			for (int i=0; i<n; i++) {
+				temp[i] = MyArrayOfPointersToPeople[i];			// copy values to new array.
+			}
+		delete [] MyArrayOfPointersToPeople;						// free old array memory.
+		MyArrayOfPointersToPeople = temp;							// now a points to new array.
+		}         
+		
 		// Creating a new person 
 		MyArrayOfPointersToPeople[total_population-1]=new person();			
 		(MyArrayOfPointersToPeople[total_population-1])->PersonIDAssign(total_population-1);
@@ -133,6 +150,8 @@ void EventBirth(person *MyPointerToPerson){
 		(MyArrayOfPointersToPeople[total_population-1])->GetMyDoBNewEntry();
 		(MyArrayOfPointersToPeople[total_population-1])->GetDateOfDeath();
 		(MyArrayOfPointersToPeople[total_population-1])->GetDateOfBaby();
+		(MyArrayOfPointersToPeople[total_population-1])->GetMyDateOfHIVInfection();
+
 
 	
 		// Link Mother and Child
