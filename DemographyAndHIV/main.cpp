@@ -34,7 +34,7 @@ using namespace std;
 // 10. Private versus public
 // 11. Think about making your own priortiy queue 
 // 12. Think about how to organise this program
-// 13. Think about a parameter document
+// 13. Think about a parameter document - transfer HIV parameter to seperate file
 
 
 
@@ -50,17 +50,15 @@ using namespace std;
 double *p_GT;																// Pointer to global time
 int *p_PY;																	// Pointer to show which year range we are on
 int PY=0;																	// Set the first pointer to year range reference to 0
-int *p_TP;																	// Pointer to MyArrayOfPointerToPatient size
 double StartYear=1950;														// Define Start Year if the model and set it to year of choice
 int EndYear=2010;															// If endyear is more than 2010, some things will need to get changes, an error message below has been set up as reminder
 
-//const long long int final_number_people=2;						// To determine the final size of the total population to be modeled
-int init_pop =10;															// Initial population 1st Jan 1950 as 5910 (see Excel for calculation)
+const long long int final_number_people=100000000;							// To determine the final size of the total population to be modeled
+int init_pop =59100;															// Initial population 1st Jan 1950 as 5910 (see Excel for calculation)
 int total_population=init_pop;												// Update total population for output and for next new entry
-int size_array_to_population=init_pop;
 
 priority_queue<event*, vector<event*>, timeComparison> *p_PQ;				// Pointer to event queue so as to be able to push-in/pop-out new events that are ocurreing  as a result of 'primary' events in the queue, e.g. recurrent birthdays
-person** MyArrayOfPointersToPeople = new person*[size_array_to_population];	// First 'person*' is a pointer (address) and 'new person' and space for x person which will point to actual person below
+person** MyArrayOfPointersToPeople = new person*[final_number_people];		// First 'person*' is a pointer (address) and 'new person' and space for x person which will point to actual person below
 																			// Have to now change [init_pop] to [final_number_people] to give the final size of 'matrix'
 vector<event *> Events;
 
@@ -93,7 +91,6 @@ cout << "Hello, Mikaela!" << endl << endl ;								// Check if model is running
 	priority_queue<event*, vector<event*>, timeComparison> iQ;				// Define th ePriority Q
 	p_PQ=&iQ;																// Define pointer to event Q
 	p_PY=&PY;
-	p_TP=&size_array_to_population;
 	
 	
 	//// --- Making Population---
