@@ -21,6 +21,7 @@ void loadHIVArray_Women();
 void loadHIVArray_Men();
 
 
+
 //// --- CREATING PEOPLE --- ////
 
 class person{										// Classes are considered private unless stated otherwise 
@@ -48,6 +49,7 @@ public:
 	int CD4_cat_start;
 	int CD4_cat;
 	int ART;	
+	float ART_T0;
 
 
 //// --- FUNCTIONS --- ////		

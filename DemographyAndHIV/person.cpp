@@ -32,6 +32,8 @@ extern priority_queue<event*, vector<event*>, timeComparison> *p_PQ;	// Tell thi
 extern vector<event*> Events;
 extern person** MyArrayOfPointersToPeople;				// Pointer to MyArrayOfPointersToPeople
 
+extern float *p_BF;
+
 
 //// --- Pointers to external arrays --- ////
 double** BirthArray;									// This is a pointer to an array!! i.e pointer to pointer :)
@@ -188,6 +190,7 @@ person::person()											// First 'person' class second constructor/variable a
 	CD4_cat_start=-999;
 	CD4_cat=-999;											// Where 0=>500, 1=350-500, 2=250-350, 3=200-250, 4=100-200, 5=50-100, and 6=<50
 	ART=-999;												// Where HIV and ART 0=No and 1=Yes
+	ART_T0=-999;
 }
 
 
@@ -296,7 +299,7 @@ void person::GetDateOfBaby(){								// This method already calculates the child
 					double Diff_1 = DatesBirth.at(n) - DatesBirth.at(m);	// This Diff is the original difference
 					double Diff_2 = DatesBirth.at(n) - DatesBirth.at(m);	// This Diff is the new one if new one is needed.  
 																			// [...] If both the same we can move on, if not we need to check the new Birth against births 1 to max again
-					while ((DatesBirth.at(n) - DatesBirth.at(m) > -0.75 && DatesBirth.at(n) - DatesBirth.at(m)<0.75) || DatesBirth.at(m)>=DateOfDeath){
+					while ((DatesBirth.at(n) - DatesBirth.at(m) > -*p_BF && DatesBirth.at(n) - DatesBirth.at(m)<*p_BF) || DatesBirth.at(m)>=DateOfDeath){
 						double	f = ((double)rand() / (RAND_MAX));
 						int j = 0;
 						while (f>BirthArray[*p_PY][j] && j<35){ j++; };
@@ -452,7 +455,7 @@ void person::GetMyDateOfHIVInfection(){
 
 		
 		//// --- Lets feed HIV infection into the eventQ --- ////
-		if (HIV>=*p_GT && HIV<EndYear){
+		if (HIV>=*p_GT && HIV<EndYear+1){
 			int p=PersonID-1;
 			event * HIVEvent = new event;												
 			Events.push_back(HIVEvent);
@@ -462,14 +465,7 @@ void person::GetMyDateOfHIVInfection(){
 			p_PQ->push(HIVEvent);
 		}
 	}
-
-
-	//// --- Some warning code - just in case ... --- ////
-	if (HIV>-977 && DoB>1900){
-		cout << endl <<  "This DIDNT WORK!! WARNING!! "<< endl;
-		cout << "HIV: " << HIV << " (Alive: " << Alive << " and Date of Death: " << DateOfDeath << ")" << endl;
-		cout << "Size reservoir: " << HIVReservoir.size() << endl << endl;
-	}
+	
 		
 	E(cout << "We have finished checking if this person will get HIV in their lfe time, the person's future HIV status is " << HIV << endl;)
 

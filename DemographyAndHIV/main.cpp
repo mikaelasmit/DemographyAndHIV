@@ -53,6 +53,16 @@ int PY=0;																	// Set the first pointer to year range reference to 0
 double StartYear=1950;														// Define Start Year if the model and set it to year of choice
 int EndYear=2010;															// If endyear is more than 2010, some things will need to get changes, an error message below has been set up as reminder
 
+// Some fertility parameters
+float *p_BF;																// Pointer to delay to next pregancy with breastfeeding duration set below
+float breastfeeding=0;														// Can change this globally here, for example to 3 months = 0.25
+float pregancy=0.75;														// Duration of average pregancy is around 9 months
+
+// Some HIV parameters
+int *p_TI;																	// Pointer to tretament initiation
+int ART_start_year=2004;
+
+// Some population parameter
 const long long int final_number_people=100000000;							// To determine the final size of the total population to be modeled
 int init_pop =59100;															// Initial population 1st Jan 1950 as 5910 (see Excel for calculation)
 int total_population=init_pop;												// Update total population for output and for next new entry
@@ -91,6 +101,9 @@ cout << "Hello, Mikaela!" << endl << endl ;								// Check if model is running
 	priority_queue<event*, vector<event*>, timeComparison> iQ;				// Define th ePriority Q
 	p_PQ=&iQ;																// Define pointer to event Q
 	p_PY=&PY;
+	float timetonextbaby=pregancy+breastfeeding;
+	p_BF=&timetonextbaby;
+	p_TI=&ART_start_year;													// Define pointer to tretament initiation (as 2004 e.g.)
 	
 	
 	//// --- Making Population---
@@ -143,7 +156,7 @@ cout << "Hello, Mikaela!" << endl << endl ;								// Check if model is running
 	//// --- Output the results in a csv file ---
 	FILE* csv_out = fopen("test.csv","w");
 	for (int i=0; i<total_population; i++) {								// Change the i< X here as well as the "%d!!
-		fprintf(csv_out,"%d,%d,%f,%f,%d,%d, %f, %d, %f, %d, %d \n",
+		fprintf(csv_out,"%d,%d,%f,%f,%d,%d, %f, %d, %f, %d, %d, %f \n",
 			MyArrayOfPointersToPeople[i]->PersonID,
 			MyArrayOfPointersToPeople[i]->Sex,
 			MyArrayOfPointersToPeople[i]->DoB,
@@ -154,7 +167,8 @@ cout << "Hello, Mikaela!" << endl << endl ;								// Check if model is running
 			MyArrayOfPointersToPeople[i]->AgeAtDeath,
 			MyArrayOfPointersToPeople[i]->HIV,
 			MyArrayOfPointersToPeople[i]->CD4_cat,
-			MyArrayOfPointersToPeople[i]->ART
+			MyArrayOfPointersToPeople[i]->ART,
+			MyArrayOfPointersToPeople[i]->ART_T0
 
 			);}
 	fclose(csv_out);
